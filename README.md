@@ -1,63 +1,79 @@
-# Telegram Bot API Proxy via Cloudflare Worker
+# Advanced Telegram Bot
 
-该项目用于通过 Cloudflare Worker 代理 Telegram Bot API，从而解决国内访问 Telegram Bot API 受限的问题。
+这是一个可直接部署到 VPS 的高级 Telegram Bot，支持：
 
-## 功能
-- 代理所有 Telegram Bot API 调用
-- 适用于国内环境
-- 零服务器成本
-- 自定义 API Endpoint：`https://你的worker域名/方法名`
+- OpenAI + DeepSeek AI 回复
+- SQLite 用户数据库
+- 多命令系统
+- systemd 后台启动
+- 一键部署脚本（deploy.sh）
 
----
+## 主要命令
 
-## 一键部署步骤
-
-### 1. 安装 Wrangler
-```bash
-npm install -g wrangler
-```
-
-### 2. 配置 BOT_TOKEN
-编辑 `wrangler.toml`：
-```toml
-BOT_TOKEN = "123456:ABCDEF"
-```
-
-或使用命令：
-```bash
-wrangler secret put BOT_TOKEN
-```
-
-### 3. 部署
-```bash
-wrangler publish
-```
-
-部署成功后，你的 Telegram Bot API 变为：
-
-```
-https://你的worker域名/sendMessage?chat_id=XXX&text=Hello
-```
-
-也可以用于 Telegram 客户端 webhook。
+| 命令 | 功能 |
+|------|------|
+| /start | 开始使用机器人 |
+| /help | 查看帮助 |
+| /ai 文字 | AI 回复 |
+| /model openai/deepseek | 切换 AI 模型 |
+| /users | 查看用户（管理员） |
 
 ---
 
-## 示例：发送消息
+## 📦 部署步骤（Ubuntu / Debian）
+
+### 1. 上传项目到 VPS
+
 ```bash
-curl "https://你的worker域名/sendMessage?chat_id=123456&text=hello"
+scp bot_project.zip root@your_vps_ip:/opt/
+cd /opt
+unzip bot_project.zip
 ```
 
----
+### 2. 设置环境变量
 
-## 目录结构
+```bash
+export BOT_TOKEN="你的TG机器人token"
+export ADMIN_ID="你的Telegram数字ID"
+export OPENAI_API_KEY="你的OpenAI key"
+export DEEPSEEK_API_KEY="你的DeepSeek key"
 ```
-index.js
-wrangler.toml
-README.md
+
+### 3. 执行一键部署
+
+```bash
+bash deploy.sh
+```
+
+### 4. 查看日志
+
+```bash
+sudo journalctl -u tgbot -f
 ```
 
 ---
 
-## 备注
-此 Worker 不存储任何数据，只做简单反向代理。
+## 📁 项目结构
+
+```
+advanced_tg_bot/
+│ bot.py
+│ config.py
+│ requirements.txt
+│ deploy.sh
+│ README.md
+│
+├── handlers/
+│      start.py
+│      help.py
+│      echo.py
+│      admin.py
+│      ai_reply.py
+│
+└── database/
+       db.py
+```
+
+---
+
+如需更多功能，请联系我生成附加模块。
